@@ -1,0 +1,20 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-internal
+  # labels:
+  # annotations:
+  #   nginx.ingress.kubernetes.io/rewrite-target: /$1 # depends on your situation
+spec:
+  ingressClassName: nginx-internal # use ingressClassName to choose external or internal
+  rules:
+    - host: nginx-internal.example.com # private dns shoud be set on private zone
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: nginx
+                port:
+                  number: 80

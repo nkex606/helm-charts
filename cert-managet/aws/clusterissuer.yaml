@@ -1,0 +1,23 @@
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: <your email>
+    privateKeySecretRef:
+      # Secret resource that will be used to store the account's private key.
+      name: letsencrypt-prod
+    solvers:
+      - dns01:
+          route53:
+            region: <your region>
+            role: <role arn>
+            auth:
+              kubernetes:
+                serviceAccountRef:
+                  name: <service account name>
+        selector:
+          dnsZones:
+            - example.com

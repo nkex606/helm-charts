@@ -1,0 +1,17 @@
+controller:
+  electionID: ingress-nginx-internal
+  ingressClassResource:
+    name: nginx-internal  # default: nginx
+    enabled: true
+    default: false
+    controllerValue: "k8s.io/ingress-nginx-internal"  # default: k8s.io/ingress-nginx
+  ingressClass: nginx-internal # default: nginx
+  service:
+    external:
+      enabled: false
+    internal:
+      enabled: true
+      annotations:
+        networking.gke.io/load-balancer-type: "Internal"
+        networking.gke.io/internal-load-balancer-allow-global-access: "true"
+    

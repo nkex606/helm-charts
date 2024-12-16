@@ -1,0 +1,6 @@
+clusterName: <your eks cluster name>
+serviceAccount:
+  create: false
+  name: aws-load-balancer-controller
+region: <your eks region>
+vpcId: <your vpc id>

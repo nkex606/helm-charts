@@ -1,0 +1,30 @@
+env:
+  - name: GOOGLE_APPLICATION_CREDENTIALS
+    value: /etc/secrets/service-account/<service-account-json-key>
+  
+extraVolumes:
+  - name: google-certbot-sa
+    secret:
+      secretName: certbot-dns # create a certbot-dns secret manually
+
+extraVolumeMounts:
+  - name: google-certbot-sa
+    mountPath: /etc/secrets/service-account
+
+sources:
+  - service
+  - ingress
+  - istio-gateway
+  - istio-virtualservice
+
+policy: sync
+
+txtOwnerId: <txt records on cloud dns>
+
+domainFilters:
+  - example.com # public
+
+provider: google
+
+extraArgs:
+  - --google-project=<your project id>

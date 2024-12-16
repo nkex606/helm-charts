@@ -1,0 +1,18 @@
+controller:
+  ingressClassResource:
+    name: nginx-internal  # default: nginx
+    enabled: true
+    default: false
+    controllerValue: "k8s.io/ingress-nginx-internal"  # default: k8s.io/ingress-nginx
+  ingressClass: nginx-internal
+  service:
+    external: 
+      enable: false
+    internal:
+      enable: true
+    annotations:
+      service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+      service.beta.kubernetes.io/aws-load-balancer-internal: "true"
+      service.beta.kubernetes.io/aws-load-balancer-type: nlb
+      service.beta.kubernetes.io/aws-load-balancer-backend-protocol: tcp
+      service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: "true"

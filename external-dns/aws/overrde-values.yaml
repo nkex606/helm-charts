@@ -1,0 +1,17 @@
+sources:
+  - service
+  - ingress
+  # - istio-gateway
+  # - istio-virtualservice
+
+policy: sync
+
+txtOwnerId: <text record on route 53>
+
+domainFilters:
+  - example.com    # public
+  - foobarbar.com  # private
+
+provider: aws
+
+# aws-zone-type: public # valid values are public, private or no value for both
