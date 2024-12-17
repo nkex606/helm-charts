@@ -1,0 +1,25 @@
+grafana:
+  alerting:
+    contactpoints.yaml:
+      apiVersion: 1
+      contactPoints:
+        - orgId: 1
+          name: telegram
+          receivers:
+            - uid: telegram
+              type: telegram
+              settings:
+                bottoken: "<telegram_bot_token>"
+                chatid: "<tg_roomid>"
+    notificationpolicies.yaml:
+      apiVersion: 1
+      policies:
+        - orgId: 1
+          receiver: telegram
+          group_by:
+            - grafana_folder
+            - alertname
+    rules.yaml:
+      apiVersion: 1
+      groups: []
+          

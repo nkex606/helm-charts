@@ -1,0 +1,69 @@
+mode: deployment
+config:
+  receivers:
+    otlp:
+      protocols:
+        grpc: 
+          endpoint: ${MY_POD_IP}:4317
+
+  exporters:
+    prometheus:
+      endpoint: ${MY_POD_IP}:8889
+
+    otlp:
+      endpoint: "tempo.tempo:4317"
+      tls: 
+        insecure: true
+
+  processors:
+    batch: {}
+      # set default value for batch processor
+      # send_batch_size: 8192 
+      # timeout: 200ms
+      # send_batch_max_size: 0
+
+  extensions:
+    health_check: {}
+    pprof:
+      endpoint: :1888
+    zpages:
+      endpoint: :55679
+
+  service:
+    extensions: 
+      - health_check
+      - pprof 
+      - zpages
+    pipelines:
+      traces:
+        receivers: 
+          - otlp
+        processors: 
+          - batch
+        exporters: 
+          - otlp
+      metrics:
+        receivers: 
+          - otlp
+        processors: 
+          - batch
+        exporters: 
+          - prometheus
+
+ports:
+  metrics:
+    enabled: true
+    containerPort: 8888
+    servicePort: 8888
+    protocol: TCP
+  app-metrics:
+    enabled: true
+    containerPort: 8889
+    servicePort: 8889
+    protocol: TCP
+
+serviceMonitor:
+  enabled: true
+  metricsEndpoints:
+    - port: app-metrics
+    - port: metrics

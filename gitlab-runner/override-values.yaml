@@ -1,0 +1,39 @@
+gitlabUrl: https://<your gitlab url>
+runnerRegistrationToken: "<runner registration token>" 
+replicas: 3
+
+runners:
+  config: |
+    [[runners]]
+      url = "https://<your gitlab url>/"
+      clone_url = "https://<your gitlab url>/"
+      [runners.kubernetes]
+        namespace = "{{ .Release.Namespace }}"
+        image = "centos:7"
+        privileged = true
+      [[runners.kubernetes.volumes.empty_dir]]
+        name = "docker-certs"
+        mount_path = "/certs/client"
+        medium = "Memory"
+
+  executor: kubernetes
+
+# See runner API Permissions
+# https://docs.gitlab.com/runner/executors/kubernetes.html#configure-runner-api-permissions
+rbac: 
+  create: true
+
+  rules:
+    - apiGroups: [""]
+      resources: ["secrets"]
+      verbs: ["list", "get", "create", "delete", "update"]
+    - apiGroups: [""]
+      resources: ["pods"]
+      verbs: ["list", "get", "watch", "create", "delete"]
+    - apiGroups: [""]
+      resources: ["pods/exec"]
+      verbs: ["create"]
+    - apiGroups: [""]
+      resources: ["pods/attach"]
+      verbs: ["list", "get", "create", "delete", "update"]
+    

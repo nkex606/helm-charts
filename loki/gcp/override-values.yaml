@@ -1,0 +1,47 @@
+loki:
+  storage:
+    bucketNames:
+      chunks: <chunks-bucket>
+      ruler: <ruler-bucket>
+      admin: <admin-bucket>
+    type: gcs
+    gcs:
+      chunkBufferSize: 0
+      requestTimeout: "10s"
+      enableHttp2: true
+
+write:
+  extraEnv:
+    - name: GOOGLE_APPLICATION_CREDENTIALS
+      value: /var/secrets/google/key.json
+  extraVolumeMounts:
+    - name: google-cloud-key
+      mountPath: /var/secrets/google
+  extraVolumes:
+    - name: google-cloud-key
+      secret:
+        secretName: loki-gcs
+
+read:
+  extraEnv:
+    - name: GOOGLE_APPLICATION_CREDENTIALS
+      value: /var/secrets/google/key.json
+  extraVolumeMounts:
+    - name: google-cloud-key
+      mountPath: /var/secrets/google
+  extraVolumes:
+    - name: google-cloud-key
+      secret:
+        secretName: loki-gcs
+        
+gateway:
+  extraEnv:
+    - name: GOOGLE_APPLICATION_CREDENTIALS
+      value: /var/secrets/google/key.json
+  extraVolumeMounts:
+    - name: google-cloud-key
+      mountPath: /var/secrets/google
+  extraVolumes:
+    - name: google-cloud-key
+      secret:
+        secretName: loki-gcs

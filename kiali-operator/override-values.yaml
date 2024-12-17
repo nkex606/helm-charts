@@ -1,0 +1,43 @@
+cr:
+  create: true
+  namespace: istio-system
+  spec:
+    server:
+      web_fqdn: <kiali host url>
+      web_root: /
+      web_schema: http
+    deployment:
+      ingress:
+        enabled: true
+        class_name: nginx-internal
+        override_yaml:
+          spec:
+            rules:
+            - host: <kiali host url>
+              http:
+                paths:
+                - path: /
+                  backend:
+                    service:
+                      name: kiali
+                      port: 
+                        number: 20001
+                  pathType: Prefix
+    external_services:
+      istio:
+        root_namespace: istio-system
+        component_status:
+          enabled: true
+          components:
+            - app_label: istiod
+              is_core: true
+            - app_label: istio-ingress
+              is_core: true
+              is_proxy: true
+              namespace: istio-ingress
+      prometheus:
+        url: http://prom-operator-kube-prometh-prometheus.monitor:9090
+      grafana:
+        in_cluster_url: http://prom-operator-grafana.monitor
+      tracing:
+        enabled: false # TODO

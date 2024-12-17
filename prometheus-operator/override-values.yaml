@@ -1,0 +1,68 @@
+kubeDns:
+  enabled: true
+
+coreDns:
+  enabled: false
+
+grafana:
+  grafana.ini:
+    server:
+      protocol: http
+      domain: <grafana url>
+      root_url: "http://<grafana url>"
+    paths:
+      data: /var/lib/grafana
+      logs: /var/log/grafana
+      provisioning: /etc/grafana/provisioning
+  adminUser: <admin username>
+  adminPassword: <admin password>
+  ingress:
+    enabled: true # if you want a ingress for grafana
+    annotations:
+      nginx.ingress.kubernetes.io/rewrite-target: /$1
+    hosts: 
+      - <grafana url>
+    path: /(.*)
+  sidecar:
+    dashboards:
+      # If specified, the sidecar will look for annotation with this name to create folder and put graph here.
+      # You can use this parameter together with `provider.foldersFromFilesStructure`to annotate configmaps and create folder structure.
+      folderAnnotation: grafana_folder
+      provider:
+        allowUiUpdates: true
+        foldersFromFilesStructure: true
+  additionalDataSources:
+    - name: Loki
+      type: loki
+      access: proxy
+      url: http://loki-gateway.log
+      editable: true
+    - name: Tempo
+      type: tempo
+      access: proxy
+      orgId: 1
+      url: http://tempo.tempo:3100
+      basicAuth: false
+      isDefault: false
+      version: 1
+      editable: true
+      apiVersion: 1
+      uid: tempo
+      jsonData:
+        httpMethod: GET
+        serviceMap:
+          datasourceUid: prometheus
+
+prometheus:
+  ingress:
+    enabled: true
+    annotations:
+      nginx.ingress.kubernetes.io/rewrite-target: /$1
+    hosts:
+      - <prometheus url>
+    paths: 
+    - /(.*)
+    pathType: Prefix
+  prometheusSpec:
+    externalUrl: http://<prometheus url>
+    enableRemoteWriteReceiver: true
